@@ -241,13 +241,26 @@ const dateModule = (() => {
     };
 
     function g2h(date) {
-        return new Intl.DateTimeFormat('fa-IR-u-ca-islamic-uma-nu-latn', {
+        // Use English locale with Islamic calendar to prevent browser from defaulting to Persian calendar in fa-IR
+        const formatter = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', {
             year: 'numeric', month: 'numeric', day: 'numeric'
-        }).format(date);
+        });
+        try {
+            const parts = formatter.formatToParts(date);
+            const y = parts.find(p => p.type === 'year').value;
+            const m = parts.find(p => p.type === 'month').value;
+            const d = parts.find(p => p.type === 'day').value;
+            return `${y}/${m}/${d}`;
+        } catch (e) {
+            return "خطا در محاسبه";
+        }
     }
     function h2g(y, m, d) {
+        // More robust Hijri to Julian Day conversion (Tabular)
         const jd = Math.floor((11 * y + 3) / 30) + 354 * y + 30 * m - Math.floor((m - 1) / 2) + d + 1948440 - 385;
-        return new Date((jd - 2440587.5) * 86400000);
+        const gDate = new Date((jd - 2440587.5) * 86400000);
+        gDate.setHours(12, 0, 0, 0); // Normalize to noon
+        return gDate;
     }
 
     function refresh() {
@@ -375,13 +388,17 @@ const passwordModule = (() => {
 const calendarModule = (() => {
     let currentMonth = moment();
 
-    // Key Iranian holidays (Static for demo)
+    // Key Iranian holidays (Static list of common fixed-date public holidays in Jalali)
+    // months are 0-based: 0 = فروردین, 1 = اردیبهشت, ... 11 = اسفند
     const holidays = [
+        // Fixed Iranian Solar Holidays
         {m: 0, d: 1}, {m: 0, d: 2}, {m: 0, d: 3}, {m: 0, d: 4}, // Nowruz
-        {m: 0, d: 12}, {m: 0, d: 13}, // Rep Day, Sizdah Bedar
-        {m: 3, d: 14}, {m: 3, d: 15}, // Khomeini's death, 15 Khordad
+        {m: 0, d: 12}, // Islamic Republic Day
+        {m: 0, d: 13}, // Nature Day (Sizdah Bedar)
+        {m: 2, d: 14}, // Death of Khomeini
+        {m: 2, d: 15}, // 15 Khordad Revolt
         {m: 10, d: 22}, // Revolution Day
-        {m: 11, d: 29}  // Oil Nationalization
+        {m: 11, d: 29}  // Oil Nationalization Day
     ];
 
     const monthNames = [
@@ -401,8 +418,10 @@ const calendarModule = (() => {
         const startOfMonth = currentMonth.clone().startOf('jMonth');
         const endOfMonth = currentMonth.clone().endOf('jMonth');
         
-        let firstDayIdx = startOfMonth.day() + 1; 
-        if (firstDayIdx > 6) firstDayIdx = 0;
+        // moment().day(): 0=Sunday ... 6=Saturday
+        // Shift so the calendar grid starts with Saturday (common for Iran views) => Saturday should be index 0
+        let firstDayIdx = startOfMonth.day();
+        firstDayIdx = (firstDayIdx + 1) % 7; // now 0=Saturday, 1=Sunday, ..., 6=Friday
 
         for (let i = 0; i < firstDayIdx; i++) {
             const empty = document.createElement('div');
