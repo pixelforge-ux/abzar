@@ -4,36 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>جعبه ابزار</title>
-    <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
+        <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  try {
-    if (window.Eitaa && Eitaa.WebApp) {
-      Eitaa.WebApp.ready();
+  if (window.Eitaa && Eitaa.WebApp) {
+    Eitaa.WebApp.ready();
 
-      // تمام صفحه شدن
-      if (Eitaa.WebApp.expand)
-        Eitaa.WebApp.expand();
+    if (Eitaa.WebApp.expand) Eitaa.WebApp.expand();
+    if (Eitaa.WebApp.setHeaderColor) Eitaa.WebApp.setHeaderColor('#ffffff');
+    if (Eitaa.WebApp.enableClosingConfirmation) Eitaa.WebApp.enableClosingConfirmation();
+    if (Eitaa.WebApp.disableVerticalSwipes) Eitaa.WebApp.disableVerticalSwipes();
 
-      // تایید قبل از بستن WebApp
-      if (Eitaa.WebApp.enableClosingConfirmation)
-        Eitaa.WebApp.enableClosingConfirmation();
+    // فعال‌سازی دکمه بک
+    Eitaa.WebApp.BackButton.show();
 
-      // غیرفعال کردن سوایپ عمودی (اگر پشتیبانی شود)
-      if (Eitaa.WebApp.disableVerticalSwipes)
-        Eitaa.WebApp.disableVerticalSwipes();
+    // فقط یک state پایه می‌ذاریم
+    history.replaceState({ root: true }, "", location.href);
 
-      // دکمه بک
-      Eitaa.WebApp.onEvent('backButtonClicked', () => {
-        if (history.length > 1) {
-          history.back();
-        } else {
-          Eitaa.WebApp.close();
-        }
-      });
-    }
-  } catch (e) {
-    console.warn(e);
+    Eitaa.WebApp.BackButton.onClick(() => {
+      // اگر state قبل‌تر هست → برگرد
+      if (history.state && !history.state.root) {
+        history.back();
+      } else {
+        // واقعاً ریشه‌ای → خروج
+        Eitaa.WebApp.close();
+      }
+    });
+
+    // هر وقت رفتی صفحه داخلی، اینو صدا بزن
+    window.pushInnerState = () => {
+      history.pushState({ inner: true }, "", location.href);
+    };
   }
 });
 </script>
@@ -893,4 +894,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <script type="module" src="app.js"></script>
 </body>
+
 </html>
