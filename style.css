@@ -1,0 +1,1094 @@
+@font-face {
+    font-family: 'Vazir';
+    src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
+}
+
+:root {
+    --primary: #4a90e2;
+    --bg-dark: #0a0a12;
+    --glass: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #ffffff;
+    --card-shadow: rgba(0,0,0,0.3);
+}
+
+body[data-theme="light"] {
+    --bg-dark: #ffffff;
+    --glass: rgba(0, 0, 0, 0.04);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --text-color: #111111;
+    --card-shadow: rgba(0,0,0,0.05);
+    background-image: none !important;
+    background-color: #ffffff !important;
+}
+
+body[data-theme="light"] .falling-icon {
+    color: #000000 !important;
+    opacity: 0.07 !important;
+}
+
+body[data-theme="light"] .glass-input {
+    background: rgba(0,0,0,0.03);
+    color: #000;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Vazir', sans-serif;
+    background-color: var(--bg-dark);
+    background-image: url('background.png');
+    background-size: cover;
+    background-position: center;
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#falling-icons-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.falling-icon {
+    position: absolute;
+    top: -50px;
+    opacity: 0.2;
+    filter: blur(1px);
+    pointer-events: none;
+    color: white;
+}
+
+[data-theme="light"] .falling-icon {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.1));
+}
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+main {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.tool-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10;
+    overflow-y: auto;
+}
+
+.tool-section.active {
+    display: flex;
+}
+
+#tool-home {
+    justify-content: flex-start;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* Glass UI Elements */
+.glass-panel {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 15px 25px;
+    text-align: center;
+}
+
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 25px;
+    padding: 25px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.glass-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    width: 100%;
+    margin-bottom: 10px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.glass-button {
+    background: var(--primary);
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.glass-button:active {
+    transform: scale(0.98);
+}
+
+.glass-button.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+}
+
+body[data-theme="light"] .glass-button.secondary {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-color);
+}
+
+/* Navigation */
+#bottom-nav {
+    height: 70px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid var(--glass-border);
+    z-index: 100;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    padding: 10px;
+    transition: color 0.3s;
+}
+
+.nav-btn.active {
+    color: var(--primary);
+}
+
+/* Home Menu */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.menu-item {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.menu-item:active {
+    transform: scale(0.95);
+    background: rgba(255,255,255,0.2);
+}
+
+.menu-item i {
+    width: 32px;
+    height: 32px;
+    color: var(--primary);
+}
+
+.menu-item span {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* World Clock List */
+.scrollable-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.wide-card {
+    max-width: 500px;
+}
+
+.clock-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 10px;
+    border-radius: 15px;
+    border: 1px solid var(--glass-border);
+}
+
+.clock-item .city-meta h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.clock-item .city-meta span {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.clock-item .time-display {
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: monospace;
+    color: var(--primary);
+}
+
+.city-select-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.mini-select {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+/* Converters */
+.converter-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.date-group {
+    margin-bottom: 20px;
+}
+
+.input-row {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.result-text {
+    margin-top: 10px;
+    color: var(--primary);
+    font-weight: bold;
+    text-align: center;
+}
+
+.result-area {
+    min-height: 80px;
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+
+.prayer-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.city-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    margin-top: 15px;
+}
+
+textarea.glass-input {
+    resize: none;
+    height: 100px;
+}
+
+/* Password Gen */
+.pass-result-container {
+    display: flex;
+    gap: 5px;
+}
+
+.mini-btn {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.random-btn-text {
+    background: var(--primary);
+    border: none;
+    border-radius: 12px;
+    padding: 0 15px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.pass-option {
+    margin: 15px 0;
+}
+
+.glass-range {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Calendar */
+.calendar-card {
+    max-width: 350px;
+    padding: 15px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+.day-name {
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding-bottom: 5px;
+    color: var(--primary);
+}
+
+.day-cell {
+    padding: 10px 0;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    position: relative;
+}
+
+.day-cell.today {
+    background: var(--primary);
+    color: white;
+    font-weight: bold;
+}
+
+.day-cell.holiday {
+    color: #ff4d4d;
+}
+
+.day-cell.holiday::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #ff4d4d;
+    border-radius: 50%;
+}
+
+.day-cell.empty {
+    background: none;
+}
+
+/* Countdown Styles */
+.countdown-box {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    padding: 10px;
+    min-width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.countdown-box span {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.countdown-box small {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+/* GPA Styles */
+.gpa-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.gpa-row input {
+    margin-bottom: 0;
+}
+
+.btn-remove-row {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: #f44336;
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 15px 0;
+}
+
+/* Calculator Styles */
+.calc-card {
+    max-width: 400px;
+    padding: 15px;
+}
+
+.calc-display {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: left;
+    margin-bottom: 20px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+}
+
+#calc-result {
+    font-size: 1.1rem;
+    opacity: 0.6;
+    height: 1.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    direction: ltr;
+}
+
+#calc-expression {
+    font-size: 2.2rem;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: ltr;
+    white-space: nowrap;
+}
+
+body[data-theme="light"] .calc-display {
+    background: rgba(0,0,0,0.03);
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.calc-btn {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    padding: 5px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: var(--text-color);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.calc-btn:active {
+    background: var(--primary);
+    transform: scale(0.95);
+}
+
+.calc-btn.op {
+    color: var(--primary);
+    font-size: 1.8rem;
+}
+
+.calc-btn.spec {
+    color: #ff4d4d;
+}
+
+.calc-btn.op-eq {
+    background: var(--primary);
+    color: white;
+}
+
+.calc-btn.wide-btn {
+    grid-column: span 2;
+    aspect-ratio: unset;
+}
+
+.calc-btn.tall-btn {
+    aspect-ratio: unset;
+    height: 100%;
+}
+
+.calc-btn.tiny {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Stopwatch */
+.stopwatch-display {
+    font-size: 3.5rem;
+    font-family: monospace;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+    color: var(--primary);
+    direction: ltr;
+}
+
+.stopwatch-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.lap-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 15px;
+    border-bottom: 1px solid var(--glass-border);
+    font-size: 0.9rem;
+}
+
+.lap-item span:first-child {
+    opacity: 0.6;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.05);
+    transition: all 0.3s;
+}
+
+.status-badge.valid {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status-badge.invalid {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.password-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-wrapper .glass-input {
+    padding-left: 45px;
+}
+
+.eye-btn {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-color);
+    opacity: 0.6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    margin-top: -5px;
+}
+
+.eye-btn:active {
+    opacity: 1;
+}
+
+/* Password Strength Meter */
+.strength-meter {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+#strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+}
+
+/* Color Studio */
+.color-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+#color-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: 15px;
+    border: 2px solid var(--glass-border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+#color-picker {
+    width: 100%;
+    height: 50px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+/* License Plate */
+.plate-visual {
+    background: white;
+    border: 2px solid #333;
+    border-radius: 6px;
+    height: 80px;
+    width: 200px;
+    margin: 0 auto;
+    display: flex;
+    overflow: hidden;
+}
+
+.plate-blue {
+    width: 35px;
+    background: #003399;
+}
+
+.plate-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+
+.plate-main span {
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.plate-main input {
+    border: none;
+    background: none;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    width: 100%;
+    outline: none;
+    color: #333;
+}
+
+/* Guess Number Styles */
+.gn-stepper-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    direction: ltr; /* ensure hundreds (data-pos=100) is left and ones (data-pos=1) is right even in RTL page */
+}
+
+.digit-stepper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.digit-box {
+    width: 60px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border: 2px solid var(--glass-border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.stepper-arrow {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stepper-arrow:active {
+    background: var(--primary);
+    transform: scale(0.9);
+}
+
+.difficulty-picker {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.diff-btn {
+    flex: 1;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    padding: 8px 2px;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.diff-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.gn-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.wheel-option-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.wheel-option-row .glass-input {
+    margin-bottom: 0;
+}
+
+.feedback-msg {
+    text-align: center;
+    min-height: 40px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Wheel Styles */
+.wheel-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 25px solid var(--primary);
+    z-index: 5;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+}
+
+#lucky-wheel-canvas {
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    background: #222;
+}
+
+/* Luck Tool Styles */
+.dice-box, .coin-box {
+    width: 80px;
+    height: 80px;
+    background: var(--primary);
+    color: white;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.coin-box {
+    border-radius: 50%;
+    background: #FFD700;
+    color: #8B4513;
+    font-size: 1.5rem;
+}
+
+.rolling {
+    animation: rollAnim 0.4s infinite;
+}
+
+@keyframes rollAnim {
+    0% { transform: rotate(0deg) scale(0.9); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(0.9); }
+}
+
+.home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.back-btn, .back-btn-mini {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.calendar-header-main {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#city-selector {
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 3000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Splash Screen */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+#splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.splash-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.splash-logo {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 40px rgba(118, 194, 175, 0.3);
+    border-radius: 50%;
+    animation: pulse 2s infinite ease-in-out;
+    overflow: hidden;
+}
+
+.splash-logo svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.creator-tag {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: -10px;
+}
+
+.loading-container {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--primary);
+    border-radius: 10px;
+    animation: loading-progress 2.5s ease-in-out forwards;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(74, 144, 226, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(74, 144, 226, 0.6); }
+}
+
+@keyframes loading-progress {
+    0% { width: 0%; }
+    30% { width: 40%; }
+    60% { width: 70%; }
+    100% { width: 100%; }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tool-section.active .glass-card {
+    animation: fadeIn 0.4s ease-out;
+}
