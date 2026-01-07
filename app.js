@@ -388,17 +388,17 @@ const passwordModule = (() => {
 const calendarModule = (() => {
     let currentMonth = moment();
 
-    // Key Iranian holidays (Static list of common fixed-date public holidays in Jalali)
+    // Key Iranian holidays (Static list of common fixed-date public solar holidays in Jalali)
     // months are 0-based: 0 = فروردین, 1 = اردیبهشت, ... 11 = اسفند
     const holidays = [
         // Fixed Iranian Solar Holidays
-        {m: 0, d: 1}, {m: 0, d: 2}, {m: 0, d: 3}, {m: 0, d: 4}, // Nowruz
-        {m: 0, d: 12}, // Islamic Republic Day
-        {m: 0, d: 13}, // Nature Day (Sizdah Bedar)
-        {m: 2, d: 14}, // Death of Khomeini
-        {m: 2, d: 15}, // 15 Khordad Revolt
-        {m: 10, d: 22}, // Revolution Day
-        {m: 11, d: 29}  // Oil Nationalization Day
+        {m: 0, d: 1}, {m: 0, d: 2}, {m: 0, d: 3}, {m: 0, d: 4}, // نوروز
+        {m: 0, d: 12}, // روز جمهوری اسلامی
+        {m: 0, d: 13}, // روز طبیعت
+        {m: 2, d: 14}, // رحلت امام خمینی
+        {m: 2, d: 15}, // قیام ۱۵ خرداد
+        {m: 10, d: 22}, // پیروزی انقلاب اسلامی
+        {m: 11, d: 29}  // ملی شدن صنعت نفت
     ];
 
     const monthNames = [
@@ -437,9 +437,9 @@ const calendarModule = (() => {
             cell.className = 'day-cell';
             cell.innerText = d.toLocaleString('fa-IR');
             
-            // Highlight Friday (index 6 in day())
+            // Highlight Friday (index 5 in moment.day())
             const currentDay = startOfMonth.clone().add(d - 1, 'days');
-            if (currentDay.day() === 6) {
+            if (currentDay.day() === 5) {
                 cell.classList.add('holiday');
             }
 
