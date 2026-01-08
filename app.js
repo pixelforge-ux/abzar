@@ -1632,6 +1632,18 @@ const gradientModule = (() => {
  */
 function initApp() {
     const splash = document.getElementById('splash-screen');
+
+    // Eitaa WebApp SDK Integration
+    const eitaaApp = window.Eitaa?.WebApp;
+    if (eitaaApp) {
+        eitaaApp.ready();
+        eitaaApp.expand();
+        eitaaApp.setHeaderColor('#0a61db');
+
+        eitaaApp.BackButton.onClick(() => {
+            window.history.back();
+        });
+    }
     
     backgroundModule.init();
     clockModule.init();
@@ -1702,6 +1714,16 @@ function initApp() {
         if (targetSection) {
             targetSection.classList.add('active');
             currentActiveTool = target;
+
+            // Handle Eitaa SDK BackButton visibility
+            if (eitaaApp) {
+                if (target === 'home') {
+                    eitaaApp.BackButton.hide();
+                } else {
+                    eitaaApp.BackButton.show();
+                }
+            }
+
             if (pushState) {
                 window.history.pushState({ tool: target }, '');
             }
